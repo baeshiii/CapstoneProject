@@ -3,8 +3,10 @@ package com.example.movenetandroid
 import android.Manifest
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.graphics.Matrix
 import android.os.Bundle
 import android.util.Log
+import android.util.Size
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -15,7 +17,7 @@ import com.example.movenetandroid.databinding.ActivityMainBinding
 import java.util.concurrent.Executors
 
 fun Bitmap.flipHorizontally(): Bitmap {
-    val matrix = android.graphics.Matrix().apply {
+    val matrix = Matrix().apply {
         preScale(-1f, 1f)
     }
     return Bitmap.createBitmap(this, 0, 0, width, height, matrix, true)
@@ -34,14 +36,14 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Ask for permission using modern launcher API
+        // Check camera permission
         if (allPermissionsGranted()) {
             startCamera()
         } else {
             requestPermissionLauncher.launch(Manifest.permission.CAMERA)
         }
 
-        // Load model
+        // Load the MoveNet model
         poseDetectorHelper = PoseDetectorHelper(this)
     }
 
@@ -54,12 +56,9 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-
     private fun allPermissionsGranted() = ContextCompat.checkSelfPermission(
         this, Manifest.permission.CAMERA
     ) == PackageManager.PERMISSION_GRANTED
-
-
 
     private fun startCamera() {
         val cameraProviderFuture = ProcessCameraProvider.getInstance(this)
@@ -72,6 +71,8 @@ class MainActivity : AppCompatActivity() {
             }
 
             val analysis = ImageAnalysis.Builder()
+                // Optional: set resolution
+                //.setTargetResolution(Size(720, 1280))
                 .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
                 .build()
 
@@ -90,8 +91,21 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun processImageProxy(imageProxy: ImageProxy) {
-        val bitmap = imageProxy.toBitmap()?.flipHorizontally() ?: return
+        var bitmap = imageProxy.toBitmap() ?: return
 
+        // ✅ Rotate FIRST (according to device orientation)
+        val rotationDegrees = imageProxy.imageInfo.rotationDegrees
+        if (rotationDegrees != 0) {
+            val matrix = Matrix().apply {
+                postRotate(rotationDegrees.toFloat())
+            }
+            bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
+        }
+
+        // ✅ Then flip horizontally for front camera mirror view
+        bitmap = bitmap.flipHorizontally()
+
+        // Run pose detection
         val keypoints = poseDetectorHelper.detectPose(bitmap)
 
         runOnUiThread {
@@ -101,8 +115,7 @@ class MainActivity : AppCompatActivity() {
         imageProxy.close()
     }
 
-
-
+    // Convert YUV ImageProxy to Bitmap
     private fun ImageProxy.toBitmap(): Bitmap? {
         val yBuffer = planes[0].buffer
         val uBuffer = planes[1].buffer
@@ -130,6 +143,4 @@ class MainActivity : AppCompatActivity() {
         val jpegBytes = out.toByteArray()
         return android.graphics.BitmapFactory.decodeByteArray(jpegBytes, 0, jpegBytes.size)
     }
-
-
 }

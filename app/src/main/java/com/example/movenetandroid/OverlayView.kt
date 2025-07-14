@@ -12,67 +12,83 @@ class OverlayView(context: Context, attrs: AttributeSet?) : View(context, attrs)
 
     var keypoints: List<PoseDetectorHelper.Keypoint> = emptyList()
 
-    // Paint for drawing keypoints (dots)
+    // 17 rainbow-like unique keypoint colors
+    private val keypointColors = listOf(
+        Color.RED, Color.GREEN, Color.BLUE, Color.MAGENTA, Color.CYAN,
+        Color.YELLOW, Color.LTGRAY, Color.DKGRAY, Color.rgb(255, 165, 0),
+        Color.rgb(128, 0, 128), Color.rgb(0, 128, 128), Color.rgb(255, 20, 147),
+        Color.rgb(0, 255, 127), Color.rgb(75, 0, 130), Color.rgb(139, 69, 19),
+        Color.rgb(173, 216, 230), Color.rgb(255, 192, 203)
+    )
+
     private val keypointPaint = Paint().apply {
-        color = Color.GREEN
-        strokeWidth = 8f
         style = Paint.Style.FILL
+        strokeWidth = 10f
+        isAntiAlias = true
     }
 
-    // Paint for drawing skeleton lines
     private val linePaint = Paint().apply {
-        color = Color.CYAN
+        color = Color.WHITE
         strokeWidth = 5f
         style = Paint.Style.STROKE
     }
 
-    // Define the joint pairs to connect with lines (indices based on MoveNet's 17 keypoints)
+    private val textPaint = Paint().apply {
+        color = Color.WHITE
+        textSize = 26f
+        style = Paint.Style.FILL
+        isAntiAlias = true
+    }
+
     private val jointPairs = listOf(
-        0 to 1,  // Nose - Left Eye
-        0 to 2,  // Nose - Right Eye
-        1 to 3,  // Left Eye - Left Ear
-        2 to 4,  // Right Eye - Right Ear
-        0 to 5,  // Nose - Left Shoulder
-        0 to 6,  // Nose - Right Shoulder
-        5 to 7,  // Left Shoulder - Left Elbow
-        7 to 9,  // Left Elbow - Left Wrist
-        6 to 8,  // Right Shoulder - Right Elbow
-        8 to 10, // Right Elbow - Right Wrist
-        5 to 6,  // Left Shoulder - Right Shoulder
-        5 to 11, // Left Shoulder - Left Hip
-        6 to 12, // Right Shoulder - Right Hip
-        11 to 12,// Left Hip - Right Hip
-        11 to 13,// Left Hip - Left Knee
-        13 to 15,// Left Knee - Left Ankle
-        12 to 14,// Right Hip - Right Knee
-        14 to 16 // Right Knee - Right Ankle
+        0 to 1, 0 to 2, 1 to 3, 2 to 4,
+        0 to 5, 0 to 6, 5 to 7, 7 to 9,
+        6 to 8, 8 to 10, 5 to 6, 5 to 11,
+        6 to 12, 11 to 12, 11 to 13, 13 to 15,
+        12 to 14, 14 to 16
     )
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
-        // The model outputs keypoints in a 192x192 space, so compute scaling factors:
-        val scaleX = width / 192f
-        val scaleY = height / 192f
 
-        // Draw skeleton lines between connected joints
+        val viewWidth = width.toFloat()
+        val viewHeight = height.toFloat()
+        val modelInputSize = 192f
+
+        // Maintain aspect ratio
+        val scale = minOf(viewWidth / modelInputSize, viewHeight / modelInputSize)
+        val offsetX = (viewWidth - modelInputSize * scale) / 2
+        val offsetY = (viewHeight - modelInputSize * scale) / 2
+
+        // Draw skeleton lines
         for ((startIdx, endIdx) in jointPairs) {
-            if (startIdx in keypoints.indices && endIdx in keypoints.indices &&
-                keypoints[startIdx].score > 0.4f && keypoints[endIdx].score > 0.4f) {
-                val startX = keypoints[startIdx].x * scaleX
-                val startY = keypoints[startIdx].y * scaleY
-                val endX = keypoints[endIdx].x * scaleX
-                val endY = keypoints[endIdx].y * scaleY
+            if (
+                startIdx in keypoints.indices && endIdx in keypoints.indices &&
+                keypoints[startIdx].score > 0.4f && keypoints[endIdx].score > 0.4f
+            ) {
+                val startX = keypoints[startIdx].x * scale + offsetX
+                val startY = keypoints[startIdx].y * scale + offsetY
+                val endX = keypoints[endIdx].x * scale + offsetX
+                val endY = keypoints[endIdx].y * scale + offsetY
                 canvas.drawLine(startX, startY, endX, endY, linePaint)
             }
         }
 
-        // Draw each keypoint as a circle
+        // Draw each keypoint and label
         for ((i, kp) in keypoints.withIndex()) {
             if (kp.score > 0.4f && !kp.x.isNaN() && !kp.y.isNaN()) {
-                val drawX = kp.x * scaleX
-                val drawY = kp.y * scaleY
+                val drawX = kp.x * scale + offsetX
+                val drawY = kp.y * scale + offsetY
+
+                // Assign a unique color to each keypoint
+                keypointPaint.color = keypointColors[i % keypointColors.size]
                 canvas.drawCircle(drawX, drawY, 10f, keypointPaint)
-                Log.d("OverlayView", "Draw keypoint [$i] at ($drawX, $drawY) score=${kp.score}")
+
+                // Draw label: [index] confidence
+                val label = "[${i}] %.2f".format(kp.score)
+                canvas.drawText(label, drawX + 12f, drawY - 12f, textPaint)
+
+                Log.d("OverlayView", "Keypoint [$i] at ($drawX, $drawY), score=${kp.score}")
             }
         }
     }
