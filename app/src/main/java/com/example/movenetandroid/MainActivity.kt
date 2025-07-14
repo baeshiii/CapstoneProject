@@ -14,6 +14,13 @@ import androidx.core.content.ContextCompat
 import com.example.movenetandroid.databinding.ActivityMainBinding
 import java.util.concurrent.Executors
 
+fun Bitmap.flipHorizontally(): Bitmap {
+    val matrix = android.graphics.Matrix().apply {
+        preScale(-1f, 1f)
+    }
+    return Bitmap.createBitmap(this, 0, 0, width, height, matrix, true)
+}
+
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
@@ -83,7 +90,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun processImageProxy(imageProxy: ImageProxy) {
-        val bitmap = imageProxy.toBitmap() ?: return
+        val bitmap = imageProxy.toBitmap()?.flipHorizontally() ?: return
 
         val keypoints = poseDetectorHelper.detectPose(bitmap)
 
@@ -93,6 +100,8 @@ class MainActivity : AppCompatActivity() {
 
         imageProxy.close()
     }
+
+
 
     private fun ImageProxy.toBitmap(): Bitmap? {
         val yBuffer = planes[0].buffer
@@ -104,19 +113,23 @@ class MainActivity : AppCompatActivity() {
         val vSize = vBuffer.remaining()
 
         val nv21 = ByteArray(ySize + uSize + vSize)
-
         yBuffer.get(nv21, 0, ySize)
         vBuffer.get(nv21, ySize, vSize)
         uBuffer.get(nv21, ySize + vSize, uSize)
 
         val yuvImage = android.graphics.YuvImage(
-            nv21, android.graphics.ImageFormat.NV21, width, height, null
+            nv21,
+            android.graphics.ImageFormat.NV21,
+            this.width,
+            this.height,
+            null
         )
 
         val out = java.io.ByteArrayOutputStream()
-        yuvImage.compressToJpeg(android.graphics.Rect(0, 0, width, height), 100, out)
-        val yuv = out.toByteArray()
-        return android.graphics.BitmapFactory.decodeByteArray(yuv, 0, yuv.size)
+        yuvImage.compressToJpeg(android.graphics.Rect(0, 0, this.width, this.height), 100, out)
+        val jpegBytes = out.toByteArray()
+        return android.graphics.BitmapFactory.decodeByteArray(jpegBytes, 0, jpegBytes.size)
     }
+
 
 }
