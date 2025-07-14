@@ -13,4 +13,20 @@
         android:id="@+id/overlayView"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
+
+    <!-- ✅ Feedback TextView overlayed on top of camera -->
+    <TextView
+        android:id="@+id/feedbackTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center_horizontal"
+        android:layout_marginBottom="24dp"
+        android:text="@string/analyzing_squat_depth"
+        android:textColor="#FFFFFF"
+        android:textSize="18sp"
+        android:background="#AA000000"
+        android:padding="12dp"
+        android:elevation="4dp"
+        android:maxLines="5"
+        android:textAlignment="center" />
 </FrameLayout>

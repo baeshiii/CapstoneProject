@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">MovenetAndroid</string>
+    <string name="analyzing_squat_depth">Analyzing squat depth</string>
 </resources>

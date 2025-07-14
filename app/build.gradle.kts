@@ -62,10 +62,11 @@ dependencies {
     implementation("androidx.appcompat:appcompat:1.6.1")
 
 
+
     // TensorFlow Lite
-    implementation("org.tensorflow:tensorflow-lite:2.12.0")
-    implementation("org.tensorflow:tensorflow-lite-support:0.3.1")
-    implementation("org.tensorflow:tensorflow-lite-gpu:2.12.0")
+    implementation("org.tensorflow:tensorflow-lite:2.13.0")
+    implementation("org.tensorflow:tensorflow-lite-support:0.4.3")
+    implementation("org.tensorflow:tensorflow-lite-gpu:2.13.0")
 
 // CameraX (updated to 1.3.1)
     implementation("androidx.camera:camera-core:1.3.1")
