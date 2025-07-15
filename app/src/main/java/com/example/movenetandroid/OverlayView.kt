@@ -12,7 +12,6 @@ class OverlayView(context: Context, attrs: AttributeSet?) : View(context, attrs)
 
     var keypoints: List<PoseDetectorHelper.Keypoint> = emptyList()
 
-    // 17 rainbow-like unique keypoint colors
     private val keypointColors = listOf(
         Color.RED, Color.GREEN, Color.BLUE, Color.MAGENTA, Color.CYAN,
         Color.YELLOW, Color.LTGRAY, Color.DKGRAY, Color.rgb(255, 165, 0),
@@ -55,12 +54,10 @@ class OverlayView(context: Context, attrs: AttributeSet?) : View(context, attrs)
         val viewHeight = height.toFloat()
         val modelInputSize = 192f
 
-        // Maintain aspect ratio
         val scale = minOf(viewWidth / modelInputSize, viewHeight / modelInputSize)
         val offsetX = (viewWidth - modelInputSize * scale) / 2
         val offsetY = (viewHeight - modelInputSize * scale) / 2
 
-        // Draw skeleton lines
         for ((startIdx, endIdx) in jointPairs) {
             if (
                 startIdx in keypoints.indices && endIdx in keypoints.indices &&
@@ -80,11 +77,9 @@ class OverlayView(context: Context, attrs: AttributeSet?) : View(context, attrs)
                 val drawX = kp.x * scale + offsetX
                 val drawY = kp.y * scale + offsetY
 
-                // Assign a unique color to each keypoint
                 keypointPaint.color = keypointColors[i % keypointColors.size]
                 canvas.drawCircle(drawX, drawY, 10f, keypointPaint)
 
-                // Draw label: [index] confidence
                 val label = "[${i}] %.2f".format(kp.score)
                 canvas.drawText(label, drawX + 12f, drawY - 12f, textPaint)
 

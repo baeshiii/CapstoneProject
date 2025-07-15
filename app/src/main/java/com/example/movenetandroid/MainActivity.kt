@@ -3,8 +3,8 @@ package com.example.movenetandroid
 import android.Manifest
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.graphics.Matrix
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -15,10 +15,21 @@ import com.example.movenetandroid.databinding.ActivityMainBinding
 import java.util.concurrent.Executors
 
 fun Bitmap.flipHorizontally(): Bitmap {
-    val matrix = android.graphics.Matrix().apply {
+    val matrix = Matrix().apply {
         preScale(-1f, 1f)
     }
     return Bitmap.createBitmap(this, 0, 0, width, height, matrix, true)
+}
+
+fun Bitmap.rotate(degrees: Float): Bitmap {
+    val matrix = Matrix().apply {
+        postRotate(degrees)
+    }
+    return Bitmap.createBitmap(this, 0, 0, width, height, matrix, true)
+}
+
+fun Bitmap.resizeToModelInput(): Bitmap {
+    return Bitmap.createScaledBitmap(this, 192, 192, true)
 }
 
 class MainActivity : AppCompatActivity() {
@@ -30,18 +41,15 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // Setup View Binding
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Ask for permission using modern launcher API
         if (allPermissionsGranted()) {
             startCamera()
         } else {
             requestPermissionLauncher.launch(Manifest.permission.CAMERA)
         }
 
-        // Load model
         poseDetectorHelper = PoseDetectorHelper(this)
     }
 
@@ -54,12 +62,9 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-
     private fun allPermissionsGranted() = ContextCompat.checkSelfPermission(
         this, Manifest.permission.CAMERA
     ) == PackageManager.PERMISSION_GRANTED
-
-
 
     private fun startCamera() {
         val cameraProviderFuture = ProcessCameraProvider.getInstance(this)
@@ -90,9 +95,18 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun processImageProxy(imageProxy: ImageProxy) {
-        val bitmap = imageProxy.toBitmap()?.flipHorizontally() ?: return
+        var bitmap = imageProxy.toBitmap() ?: return
 
-        val keypoints = poseDetectorHelper.detectPose(bitmap)
+        val rotationDegrees = imageProxy.imageInfo.rotationDegrees
+        if (rotationDegrees != 0) {
+            bitmap = bitmap.rotate(rotationDegrees.toFloat())
+        }
+
+        bitmap = bitmap.flipHorizontally()
+
+        val modelInput = bitmap.resizeToModelInput()
+
+        val keypoints = poseDetectorHelper.detectPose(modelInput)
 
         runOnUiThread {
             binding.overlayView.updateKeypoints(keypoints)
@@ -100,8 +114,6 @@ class MainActivity : AppCompatActivity() {
 
         imageProxy.close()
     }
-
-
 
     private fun ImageProxy.toBitmap(): Bitmap? {
         val yBuffer = planes[0].buffer
@@ -130,6 +142,4 @@ class MainActivity : AppCompatActivity() {
         val jpegBytes = out.toByteArray()
         return android.graphics.BitmapFactory.decodeByteArray(jpegBytes, 0, jpegBytes.size)
     }
-
-
 }

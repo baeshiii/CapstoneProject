@@ -20,7 +20,6 @@ class PoseDetectorHelper(context: Context) {
         private const val CONFIDENCE_THRESHOLD = 0.15f
     }
 
-    // Smoothing factors for each keypoint (based on your Python configuration)
     private val keypointSmoothingFactors = floatArrayOf(
         0.7f, 0.7f, 0.7f, 0.7f, 0.7f,
         0.65f, 0.65f, 0.6f, 0.6f, 0.55f,
@@ -28,7 +27,6 @@ class PoseDetectorHelper(context: Context) {
         0.55f, 0.55f
     )
 
-    // Store previous frame keypoints for smoothing
     private var previousKeypoints: List<Keypoint>? = null
 
     init {
@@ -37,11 +35,9 @@ class PoseDetectorHelper(context: Context) {
     }
 
     fun detectPose(bitmap: Bitmap): List<Keypoint> {
-        // Resize image to model input (192x192) and prepare input tensor
         val scaledBitmap = Bitmap.createScaledBitmap(bitmap, INPUT_WIDTH, INPUT_HEIGHT, true)
         val input = TensorImage.fromBitmap(scaledBitmap).buffer
 
-        // Allocate output buffer, shape: [1, 1, 17, 3]
         val output = Array(1) {
             Array(1) {
                 Array(NUM_KEYPOINTS) {
@@ -50,10 +46,8 @@ class PoseDetectorHelper(context: Context) {
             }
         }
 
-        // Run inference
         interpreter.run(input, output)
 
-        // Obtain raw keypoints; note: model outputs are normalized relative to INPUT_WIDTH/HEIGHT
         val currentKeypoints = mutableListOf<Keypoint>()
         for (i in 0 until NUM_KEYPOINTS) {
             val y = output[0][0][i][0] * INPUT_HEIGHT
@@ -63,13 +57,12 @@ class PoseDetectorHelper(context: Context) {
             currentKeypoints.add(Keypoint(x, y, score))
         }
 
-        // Apply smoothing if previous keypoints exist
         val smoothedKeypoints = if (previousKeypoints != null) {
             val newKeypoints = mutableListOf<Keypoint>()
             for (i in 0 until NUM_KEYPOINTS) {
                 val current = currentKeypoints[i]
                 val previous = previousKeypoints!![i]
-                // Only smooth if the current confidence is high enough, otherwise keep previous
+
                 if (current.score < CONFIDENCE_THRESHOLD) {
                     newKeypoints.add(previous)
                 } else {
@@ -84,7 +77,6 @@ class PoseDetectorHelper(context: Context) {
             currentKeypoints
         }
 
-        // Update previous keypoints for next frame
         previousKeypoints = smoothedKeypoints
         return smoothedKeypoints
     }
