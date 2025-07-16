@@ -10,7 +10,8 @@ import android.util.Log
 
 class OverlayView(context: Context, attrs: AttributeSet?) : View(context, attrs) {
 
-    var keypoints: List<PoseDetectorHelper.Keypoint> = emptyList()
+    // Change keypoints type to Array<FloatArray>
+    var keypoints: Array<FloatArray> = emptyArray()
 
     private val keypointColors = listOf(
         Color.RED, Color.GREEN, Color.BLUE, Color.MAGENTA, Color.CYAN,
@@ -61,34 +62,35 @@ class OverlayView(context: Context, attrs: AttributeSet?) : View(context, attrs)
         for ((startIdx, endIdx) in jointPairs) {
             if (
                 startIdx in keypoints.indices && endIdx in keypoints.indices &&
-                keypoints[startIdx].score > 0.4f && keypoints[endIdx].score > 0.4f
+                keypoints[startIdx][2] > 0.4f && keypoints[endIdx][2] > 0.4f
             ) {
-                val startX = keypoints[startIdx].x * scale + offsetX
-                val startY = keypoints[startIdx].y * scale + offsetY
-                val endX = keypoints[endIdx].x * scale + offsetX
-                val endY = keypoints[endIdx].y * scale + offsetY
+                val startX = keypoints[startIdx][1] * scale + offsetX
+                val startY = keypoints[startIdx][0] * scale + offsetY
+                val endX = keypoints[endIdx][1] * scale + offsetX
+                val endY = keypoints[endIdx][0] * scale + offsetY
                 canvas.drawLine(startX, startY, endX, endY, linePaint)
             }
         }
 
         // Draw each keypoint and label
         for ((i, kp) in keypoints.withIndex()) {
-            if (kp.score > 0.4f && !kp.x.isNaN() && !kp.y.isNaN()) {
-                val drawX = kp.x * scale + offsetX
-                val drawY = kp.y * scale + offsetY
+            if (kp[2] > 0.4f && !kp[1].isNaN() && !kp[0].isNaN()) {
+                val drawX = kp[1] * scale + offsetX
+                val drawY = kp[0] * scale + offsetY
 
                 keypointPaint.color = keypointColors[i % keypointColors.size]
                 canvas.drawCircle(drawX, drawY, 10f, keypointPaint)
 
-                val label = "[${i}] %.2f".format(kp.score)
+                val label = "[${i}] %.2f".format(kp[2])
                 canvas.drawText(label, drawX + 12f, drawY - 12f, textPaint)
 
-                Log.d("OverlayView", "Keypoint [$i] at ($drawX, $drawY), score=${kp.score}")
+                Log.d("OverlayView", "Keypoint [$i] at ($drawX, $drawY), score=${kp[2]}")
             }
         }
     }
 
-    fun updateKeypoints(newKeypoints: List<PoseDetectorHelper.Keypoint>) {
+    // Update to accept Array<FloatArray>
+    fun updateKeypoints(newKeypoints: Array<FloatArray>) {
         keypoints = newKeypoints
         invalidate()
     }
