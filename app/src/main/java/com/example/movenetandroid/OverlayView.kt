@@ -11,6 +11,7 @@ import android.util.Log
 class OverlayView(context: Context, attrs: AttributeSet?) : View(context, attrs) {
 
     var keypoints: Array<FloatArray> = emptyArray()
+    var isMirrored: Boolean = false
 
     private val keypointColors = listOf(
         Color.RED, Color.GREEN, Color.BLUE, Color.MAGENTA, Color.CYAN,
@@ -72,9 +73,9 @@ class OverlayView(context: Context, attrs: AttributeSet?) : View(context, attrs)
                 // Check confidence threshold
                 if (startKp[2] > 0.3f && endKp[2] > 0.3f) {
                     // Flip the X coordinate to correct the mirroring
-                    val startX = (1f - startKp[1]) * viewWidth
+                    val startX = if (isMirrored) (1f - startKp[1]) * viewWidth else startKp[1] * viewWidth
                     val startY = startKp[0] * viewHeight
-                    val endX = (1f - endKp[1]) * viewWidth
+                    val endX = if (isMirrored) (1f - endKp[1]) * viewWidth else endKp[1] * viewWidth
                     val endY = endKp[0] * viewHeight
                     
                     canvas.drawLine(startX, startY, endX, endY, linePaint)
@@ -86,7 +87,7 @@ class OverlayView(context: Context, attrs: AttributeSet?) : View(context, attrs)
         for ((i, kp) in keypoints.withIndex()) {
             if (kp[2] > 0.3f) { // Confidence threshold
                 // Flip the X coordinate to correct the mirroring
-                val drawX = (1f - kp[1]) * viewWidth
+                val drawX = if (isMirrored) (1f - kp[1]) * viewWidth else kp[1] * viewWidth
                 val drawY = kp[0] * viewHeight
 
                 keypointPaint.color = keypointColors[i % keypointColors.size]

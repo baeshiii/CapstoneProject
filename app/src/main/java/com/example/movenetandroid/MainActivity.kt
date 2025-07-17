@@ -123,6 +123,9 @@ class MainActivity : AppCompatActivity() {
                 }
                 val cameraSelector = CameraSelector.Builder().requireLensFacing(lensFacing).build()
 
+                // Set mirroring for overlay
+                overlayView.isMirrored = (lensFacing == CameraSelector.LENS_FACING_FRONT)
+
                 val imageAnalysis = ImageAnalysis.Builder()
                     .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
                     .build()
