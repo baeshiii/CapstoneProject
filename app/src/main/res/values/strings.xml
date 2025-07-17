@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">MovenetAndroid</string>
     <string name="analyzing_squat_depth">Analyzing squat depth</string>
+    <string name="reset_counter">Reset Counter</string>
 </resources>
