@@ -25,6 +25,7 @@ import android.os.Handler
 import android.os.Looper
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
+import com.example.movenetandroid.pose.SpineAnalyzer
 
 class MainActivity : AppCompatActivity() {
     private lateinit var feedbackTextView: TextView
@@ -152,9 +153,14 @@ class MainActivity : AppCompatActivity() {
                     val keypoints = poseProcessor.processFrame(bitmap)
                     val (phase, angle) = squatAnalyzer.detectSquatPhase(keypoints, bitmap.height, bitmap.width)
                     
-                    val feedback = squatAnalyzer.getSquatFeedback(phase, 
+                    val feedback = squatAnalyzer.getComprehensiveFeedback(
+                        phase, 
                         (keypoints[11][0] * bitmap.height + keypoints[12][0] * bitmap.height) / 2f, 
-                        (keypoints[13][0] * bitmap.height + keypoints[14][0] * bitmap.height) / 2f)
+                        (keypoints[13][0] * bitmap.height + keypoints[14][0] * bitmap.height) / 2f,
+                        keypoints,
+                        bitmap.height,
+                        bitmap.width
+                    )
                     
                     // Update repetition counter with both phase and feedback
                     repetitionCounter.updatePhase(phase, feedback)

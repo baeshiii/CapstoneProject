@@ -5,9 +5,17 @@ import kotlin.math.acos
 import kotlin.math.sqrt
 import kotlin.math.max
 import kotlin.math.min
+import kotlin.math.atan2
 
 class SquatAnalyzer {
     enum class Phase { STANDING, DESCENDING, BOTTOM, ASCENDING, UNKNOWN }
+    
+    enum class SpineAlignment { 
+        NEUTRAL, 
+        FLEXED,      // Excessive lumbar flexion (rounding)
+        EXTENDED,    // Excessive lumbar extension (hyperlordosis)
+        UNKNOWN 
+    }
 
     private var squatPhase: Phase = Phase.STANDING
     private var phaseFrames: Int = 0
@@ -16,6 +24,9 @@ class SquatAnalyzer {
     private val movementThreshold = 5f
     private val standingThreshold = 50f // Hip well above knee
     private val bottomThreshold = 30f    // Hip at or below knee
+    
+    // Spine analyzer integration
+    private val spineAnalyzer = SpineAnalyzer()
 
     fun detectSquatPhase(
         keypoints: Array<FloatArray>,
@@ -56,19 +67,56 @@ class SquatAnalyzer {
 
             if (newPhase == squatPhase) phaseFrames++ else { squatPhase = newPhase; phaseFrames = 0 }
 
-            // Add feedback for squat depth at bottom
-            val feedback = getSquatFeedback(newPhase, hipY, kneeY)
-            if (feedback.isNotEmpty()) println(feedback)
-
             return Pair(newPhase, hipKneeDiff)
         }
         return Pair(Phase.UNKNOWN, 0f)
     }
 
+    // Enhanced feedback function that includes comprehensive spine analysis
+    fun getComprehensiveFeedback(
+        phase: Phase, 
+        hipY: Float, 
+        kneeY: Float, 
+        keypoints: Array<FloatArray>,
+        imageHeight: Int,
+        imageWidth: Int
+    ): String {
+        val baseFeedback = getSquatFeedback(phase, hipY, kneeY)
+        
+        // Only show spine analysis when actually squatting (not standing)
+        if (phase == Phase.STANDING) {
+            return baseFeedback
+        }
+        
+        // Get spine analysis only during squat movement
+        val spineAnalysis = spineAnalyzer.analyzeSpine(keypoints, imageHeight, imageWidth)
+        
+        // Only include spine feedback if we have valid analysis
+        return if (spineAnalysis.alignment != SpineAnalyzer.SpineAlignment.UNKNOWN) {
+            val spineFeedback = when (spineAnalysis.riskLevel) {
+                SpineAnalyzer.RiskLevel.LOW -> "✓ ${spineAnalysis.feedback}"
+                SpineAnalyzer.RiskLevel.MEDIUM -> "⚠️ ${spineAnalysis.feedback}"
+                SpineAnalyzer.RiskLevel.HIGH -> "🚨 ${spineAnalysis.feedback}"
+                SpineAnalyzer.RiskLevel.CRITICAL -> "🚨 ${spineAnalysis.feedback}"
+            }
+            "$baseFeedback | $spineFeedback"
+        } else {
+            baseFeedback
+        }
+    }
+
+    // Get detailed spine analysis for advanced feedback
+    fun getDetailedSpineAnalysis(
+        keypoints: Array<FloatArray>,
+        imageHeight: Int,
+        imageWidth: Int
+    ): SpineAnalyzer.SpineAnalysis {
+        return spineAnalyzer.analyzeSpine(keypoints, imageHeight, imageWidth)
+    }
+
     // New feedback function using hipY and kneeY
     fun getSquatFeedback(phase: Phase, hipY: Float, kneeY: Float): String {
         if (phase == Phase.BOTTOM) {
-            // val debugInfo = "[hipY=$hipY, kneeY=$kneeY, hipY-kneeY=${hipY - kneeY}, minDepthMargin=$minDepthMargin]"
             return if (hipY >= kneeY) {
                 "Good Squat Depth!"
             } else {
