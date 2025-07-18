@@ -38,6 +38,7 @@
 
 - `PoseProcessor`: Handles running the MoveNet model and smoothing keypoints.
 - `SquatDepthAnalyzer`: Determines squat phase and calculates joint angles.
+- `SpineAnalyzer`: Determines the spine neutrality during a squat.
 - `OverlayView`: Draws keypoints and skeleton overlay on frames.
 - `VideoPoseProcessor`: Processes pose detection on video files.
 
