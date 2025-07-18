@@ -37,7 +37,7 @@
 ### Key Classes
 
 - `PoseProcessor`: Handles running the MoveNet model and smoothing keypoints.
-- `SquatAnalyzer`: Determines squat phase and calculates joint angles.
+- `SquatDepthAnalyzer`: Determines squat phase and calculates joint angles.
 - `OverlayView`: Draws keypoints and skeleton overlay on frames.
 - `VideoPoseProcessor`: Processes pose detection on video files.
 
@@ -46,7 +46,7 @@
 - **Model:**  
   You can swap `movenet-lightning.tflite` with another compatible TFLite pose model.
 - **Feedback Logic:**  
-  Modify `SquatAnalyzer` and `FeedbackUtils` for different exercise feedback.
+  Modify `SquatDepthAnalyzer` and `FeedbackUtils` for different exercise feedback.
 
 ## License
 

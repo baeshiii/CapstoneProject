@@ -5,7 +5,7 @@ import android.graphics.Bitmap
 import android.media.MediaMetadataRetriever
 import android.net.Uri
 import com.example.movenetandroid.pose.PoseProcessor
-import com.example.movenetandroid.pose.SquatAnalyzer
+import com.example.movenetandroid.pose.SquatDepthAnalyzer
 import com.example.movenetandroid.utils.ModelUtils
 import com.example.movenetandroid.utils.VisualizationUtils
 import com.example.movenetandroid.feedback.FeedbackUtils
@@ -22,7 +22,7 @@ class VideoPoseProcessor(
 ) {
     private lateinit var interpreter: Interpreter
     private lateinit var poseProcessor: PoseProcessor
-    private lateinit var squatAnalyzer: SquatAnalyzer
+    private lateinit var squatAnalyzer: SquatDepthAnalyzer
     private val executor = Executors.newFixedThreadPool(4) // Parallel processing
     private val processedFrames = AtomicInteger(0)
 
@@ -31,7 +31,7 @@ class VideoPoseProcessor(
             try {
                 interpreter = ModelUtils.createInterpreter(context, "movenet-lightning.tflite")
                 poseProcessor = PoseProcessor(interpreter, 192)
-                squatAnalyzer = SquatAnalyzer()
+                squatAnalyzer = SquatDepthAnalyzer()
 
                 val retriever = MediaMetadataRetriever()
                 retriever.setDataSource(context, videoUri)

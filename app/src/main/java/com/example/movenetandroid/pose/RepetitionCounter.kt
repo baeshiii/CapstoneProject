@@ -5,15 +5,15 @@ class RepetitionCounter {
     private var achievedGoodDepth = false
     private var onRepetitionCountChanged: ((Int) -> Unit)? = null
     
-    fun updatePhase(phase: SquatAnalyzer.Phase, feedback: String) {
+    fun updatePhase(phase: SquatDepthAnalyzer.Phase, feedback: String) {
         when (phase) {
-            SquatAnalyzer.Phase.BOTTOM -> {
+            SquatDepthAnalyzer.Phase.BOTTOM -> {
                 // Check if user achieved good depth
                 if (feedback.contains("Good Squat Depth")) {
                     achievedGoodDepth = true
                 }
             }
-            SquatAnalyzer.Phase.STANDING -> {
+            SquatDepthAnalyzer.Phase.STANDING -> {
                 // Count rep if user achieved good depth and is now standing
                 if (achievedGoodDepth) {
                     repetitionCount++

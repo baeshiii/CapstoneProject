@@ -6,7 +6,7 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.example.movenetandroid.pose.PoseProcessor
-import com.example.movenetandroid.pose.SquatAnalyzer
+import com.example.movenetandroid.pose.SquatDepthAnalyzer
 import com.example.movenetandroid.pose.RepetitionCounter
 import com.example.movenetandroid.utils.ModelUtils
 import org.tensorflow.lite.Interpreter
@@ -33,7 +33,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var resetCounterButton: Button
     private lateinit var interpreter: Interpreter
     private lateinit var poseProcessor: PoseProcessor
-    private lateinit var squatAnalyzer: SquatAnalyzer
+    private lateinit var squatAnalyzer: SquatDepthAnalyzer
     private lateinit var repetitionCounter: RepetitionCounter
     private lateinit var previewView: PreviewView
     private lateinit var overlayView: OverlayView
@@ -102,7 +102,7 @@ class MainActivity : AppCompatActivity() {
                 poseProcessor = PoseProcessor(interpreter, 192)
                 
                 feedbackTextView.post { feedbackTextView.text = "Initializing squat analyzer..." }
-                squatAnalyzer = SquatAnalyzer()
+                squatAnalyzer = SquatDepthAnalyzer()
                 
                 feedbackTextView.post { feedbackTextView.text = "Setting up camera..." }
                 setupCamera()

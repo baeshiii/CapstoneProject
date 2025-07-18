@@ -7,7 +7,7 @@ import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.atan2
 
-class SquatAnalyzer {
+class SquatDepthAnalyzer {
     enum class Phase { STANDING, DESCENDING, BOTTOM, ASCENDING, UNKNOWN }
     
     enum class SpineAlignment { 
