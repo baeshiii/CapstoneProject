@@ -1,81 +1,96 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:background="#0A033A"
+    tools:context=".MainActivity">
 
-    <FrameLayout
-        android:id="@+id/main_frame"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1">
-
-        <androidx.camera.view.PreviewView
-            android:id="@+id/previewView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
-        <com.example.movenetandroid.OverlayView
-            android:id="@+id/overlayView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
-        <!-- Repetition Counter -->
-        <TextView
-            android:id="@+id/repetitionCounterTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="top|center_horizontal"
-            android:layout_marginTop="24dp"
-            android:text="Reps: 0"
-            android:textColor="#FFFFFF"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            android:background="#AA000000"
-            android:padding="12dp"
-            android:elevation="4dp"
-            android:textAlignment="center" />
-
-        <!-- Feedback TextView overlayed on top of camera -->
-        <TextView
-            android:id="@+id/feedbackTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|center_horizontal"
-            android:layout_marginBottom="24dp"
-            android:text="@string/analyzing_squat_depth"
-            android:textColor="#FFFFFF"
-            android:textSize="18sp"
-            android:background="#AA000000"
-            android:padding="12dp"
-            android:elevation="4dp"
-            android:maxLines="5"
-            android:textAlignment="center" />
-
-    </FrameLayout>
-
+    <!-- Logo and App Name -->
     <LinearLayout
-        android:layout_width="match_parent"
+        android:id="@+id/logoSection"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_margin="16dp">
+        android:gravity="center"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="32dp">
 
-        <Button
-            android:id="@+id/resetCounterButton"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_marginEnd="8dp"
-            android:text="@string/reset_counter" />
-
-        <Button
-            android:id="@+id/flipCameraButton"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_marginStart="8dp"
-            android:text="Flip Camera" />
-
+        <ImageView
+            android:id="@+id/logoIcon"
+            android:layout_width="250dp"
+            android:layout_height="90dp"
+            android:src="@drawable/logo" />
     </LinearLayout>
 
-</LinearLayout>
+    <!-- Title -->
+    <TextView
+        android:id="@+id/squatTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="SQUATS"
+        android:textColor="#FFFFFF"
+        android:textSize="28sp"
+        android:textStyle="bold"
+        android:letterSpacing="0.05"
+        android:fontFamily="sans-serif-medium"
+        android:shadowColor="#80000000"
+        android:shadowDx="1"
+        android:shadowDy="1"
+        android:shadowRadius="2"
+        app:layout_constraintTop_toBottomOf="@id/logoSection"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="75dp" />
+
+    <!-- Workout Image -->
+    <ImageView
+        android:id="@+id/squatImage"
+        android:layout_width="320dp"
+        android:layout_height="420dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/squat"
+        android:background="@drawable/rounded_corners"
+        android:elevation="4dp"
+        android:clipToOutline="true"
+        android:layout_marginTop="0dp"
+        android:layout_marginBottom="65dp"
+        android:clickable="true"
+        android:focusable="true"
+        app:layout_constraintTop_toBottomOf="@id/squatTitle"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/bottomNav" />
+
+
+    <!-- Bottom Navigation -->
+    <LinearLayout
+        android:id="@+id/bottomNav"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:background="#0F045D"
+        android:orientation="horizontal"
+        android:gravity="center"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <ImageView
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@drawable/selected"
+            android:layout_marginHorizontal="32dp" />
+
+        <ImageView
+            android:id="@+id/cameraIcon"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@drawable/camera"
+            android:layout_marginHorizontal="32dp"
+            android:clickable="true"
+            android:focusable="true" />
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

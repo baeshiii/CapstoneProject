@@ -6,7 +6,6 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.util.AttributeSet
 import android.view.View
-import android.util.Log
 
 class OverlayView(context: Context, attrs: AttributeSet?) : View(context, attrs) {
 
@@ -69,15 +68,13 @@ class OverlayView(context: Context, attrs: AttributeSet?) : View(context, attrs)
             if (startIdx < keypoints.size && endIdx < keypoints.size) {
                 val startKp = keypoints[startIdx]
                 val endKp = keypoints[endIdx]
-                
-                // Check confidence threshold
+
                 if (startKp[2] > 0.3f && endKp[2] > 0.3f) {
-                    // Flip the X coordinate to correct the mirroring
                     val startX = if (isMirrored) (1f - startKp[1]) * viewWidth else startKp[1] * viewWidth
                     val startY = startKp[0] * viewHeight
                     val endX = if (isMirrored) (1f - endKp[1]) * viewWidth else endKp[1] * viewWidth
                     val endY = endKp[0] * viewHeight
-                    
+
                     canvas.drawLine(startX, startY, endX, endY, linePaint)
                 }
             }
@@ -85,8 +82,7 @@ class OverlayView(context: Context, attrs: AttributeSet?) : View(context, attrs)
 
         // Draw keypoints
         for ((i, kp) in keypoints.withIndex()) {
-            if (kp[2] > 0.3f) { // Confidence threshold
-                // Flip the X coordinate to correct the mirroring
+            if (kp[2] > 0.3f) {
                 val drawX = if (isMirrored) (1f - kp[1]) * viewWidth else kp[1] * viewWidth
                 val drawY = kp[0] * viewHeight
 
