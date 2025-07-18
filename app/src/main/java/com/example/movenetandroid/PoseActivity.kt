@@ -6,7 +6,7 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.example.movenetandroid.pose.PoseProcessor
-import com.example.movenetandroid.pose.SquatAnalyzer
+import com.example.movenetandroid.pose.SquatDepthAnalyzer
 import com.example.movenetandroid.pose.RepetitionCounter
 import com.example.movenetandroid.utils.ModelUtils
 import org.tensorflow.lite.Interpreter
@@ -25,19 +25,22 @@ import android.os.Handler
 import android.os.Looper
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
+import com.example.movenetandroid.pose.SpineAnalyzer
+import android.widget.ImageButton
+
 
 class PoseActivity : AppCompatActivity() {
     private lateinit var feedbackTextView: TextView
     private lateinit var repetitionCounterTextView: TextView
-    private lateinit var resetCounterButton: Button
+    private lateinit var resetCounterButton: ImageButton
     private lateinit var interpreter: Interpreter
     private lateinit var poseProcessor: PoseProcessor
-    private lateinit var squatAnalyzer: SquatAnalyzer
+    private lateinit var squatAnalyzer: SquatDepthAnalyzer
     private lateinit var repetitionCounter: RepetitionCounter
     private lateinit var previewView: PreviewView
     private lateinit var overlayView: OverlayView
     private var lensFacing = CameraSelector.LENS_FACING_BACK
-    private lateinit var flipCameraButton: Button
+    private lateinit var flipCameraButton: ImageButton
     private var cameraProvider: ProcessCameraProvider? = null
     private var analysisExecutor = Executors.newSingleThreadExecutor()
     private val mainHandler = Handler(Looper.getMainLooper())
@@ -49,10 +52,11 @@ class PoseActivity : AppCompatActivity() {
         // Initialize views
         feedbackTextView = findViewById(R.id.feedbackTextView)
         repetitionCounterTextView = findViewById(R.id.repetitionCounterTextView)
-        resetCounterButton = findViewById(R.id.resetCounterButton)
+        resetCounterButton = findViewById<ImageButton>(R.id.resetCounterButton)
+        flipCameraButton = findViewById<ImageButton>(R.id.flipCameraButton)
         previewView = findViewById(R.id.previewView)
         overlayView = findViewById(R.id.overlayView)
-        flipCameraButton = findViewById(R.id.flipCameraButton)
+
 
         // Initialize repetition counter
         repetitionCounter = RepetitionCounter()
@@ -65,6 +69,7 @@ class PoseActivity : AppCompatActivity() {
         // Set up reset button
         resetCounterButton.setOnClickListener {
             repetitionCounter.resetCount()
+            repetitionCounterTextView.text = "Reps: 0"
         }
 
         // Request camera permission
@@ -101,7 +106,7 @@ class PoseActivity : AppCompatActivity() {
                 poseProcessor = PoseProcessor(interpreter, 192)
 
                 feedbackTextView.post { feedbackTextView.text = "Initializing squat analyzer..." }
-                squatAnalyzer = SquatAnalyzer()
+                squatAnalyzer = SquatDepthAnalyzer()
 
                 feedbackTextView.post { feedbackTextView.text = "Setting up camera..." }
                 setupCamera()
@@ -152,9 +157,14 @@ class PoseActivity : AppCompatActivity() {
                     val keypoints = poseProcessor.processFrame(bitmap)
                     val (phase, angle) = squatAnalyzer.detectSquatPhase(keypoints, bitmap.height, bitmap.width)
 
-                    val feedback = squatAnalyzer.getSquatFeedback(phase,
+                    val feedback = squatAnalyzer.getComprehensiveFeedback(
+                        phase,
                         (keypoints[11][0] * bitmap.height + keypoints[12][0] * bitmap.height) / 2f,
-                        (keypoints[13][0] * bitmap.height + keypoints[14][0] * bitmap.height) / 2f)
+                        (keypoints[13][0] * bitmap.height + keypoints[14][0] * bitmap.height) / 2f,
+                        keypoints,
+                        bitmap.height,
+                        bitmap.width
+                    )
 
                     // Update repetition counter with both phase and feedback
                     repetitionCounter.updatePhase(phase, feedback)
