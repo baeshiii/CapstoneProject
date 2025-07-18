@@ -109,13 +109,12 @@ class SpineAnalyzer {
     }
     
     private fun getFeedback(alignment: SpineAlignment, angle: Double): String {
-        val absAngle = abs(angle)
         return when (alignment) {
             SpineAlignment.NEUTRAL -> "Neutral spine maintained"
-            SpineAlignment.SLIGHT_FLEXION -> "Minor forward lean (${String.format("%.1f", absAngle)}°)"
+            SpineAlignment.SLIGHT_FLEXION -> "Minor forward lean"
             SpineAlignment.MODERATE_FLEXION -> "Moderate forward lean - focus on neutral alignment"
             SpineAlignment.SEVERE_FLEXION -> "Excessive forward lean - stop and reset position"
-            SpineAlignment.SLIGHT_EXTENSION -> "Minor backward lean (${String.format("%.1f", abs(angle))}°)"
+            SpineAlignment.SLIGHT_EXTENSION -> "Minor backward lean"
             SpineAlignment.MODERATE_EXTENSION -> "Moderate backward lean - reduce lumbar extension"
             SpineAlignment.SEVERE_EXTENSION -> "Excessive backward lean - stop and reset position"
             SpineAlignment.UNKNOWN -> "Unable to analyze spine position"
