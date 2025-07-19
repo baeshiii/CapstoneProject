@@ -29,7 +29,7 @@ class SpineAnalyzer {
         val biomechanicalImpact: String
     )
 
-    // Adjusted biomechanical thresholds - more realistic for real-world movement
+
     private val neutralThreshold = 20.0      // ±5° tolerance for neutral (more forgiving)
     private val slightFlexionThreshold = 35.0 // 5-15° slight flexion
     private val moderateFlexionThreshold = 45.0 // 15-25° moderate flexion

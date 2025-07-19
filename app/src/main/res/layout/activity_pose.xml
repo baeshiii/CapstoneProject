@@ -43,7 +43,7 @@
         android:maxLines="5"
         android:textAlignment="center" />
 
-
+    <!-- Image Button Added -->
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">

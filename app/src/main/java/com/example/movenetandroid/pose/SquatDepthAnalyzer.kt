@@ -12,8 +12,8 @@ class SquatDepthAnalyzer {
 
     enum class SpineAlignment {
         NEUTRAL,
-        FLEXED,      // Excessive lumbar flexion (rounding)
-        EXTENDED,    // Excessive lumbar extension (hyperlordosis)
+        FLEXED,
+        EXTENDED,
         UNKNOWN
     }
 

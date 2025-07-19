@@ -29,6 +29,7 @@ class MainActivity : AppCompatActivity() {
         squatImage.setOnClickListener(View.OnClickListener { v: View? ->
             val intent = Intent(this@MainActivity, SquatArticle::class.java)
             startActivity(intent)
+            //animation
             overridePendingTransition(R.anim.fade_in, R.anim.fade_out)
         })
 

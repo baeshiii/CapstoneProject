@@ -23,7 +23,7 @@ class VideoPoseProcessor(
     private lateinit var interpreter: Interpreter
     private lateinit var poseProcessor: PoseProcessor
     private lateinit var squatAnalyzer: SquatDepthAnalyzer
-    private val executor = Executors.newFixedThreadPool(4) // Parallel processing
+    private val executor = Executors.newFixedThreadPool(4) 
     private val processedFrames = AtomicInteger(0)
 
     fun processVideo() {

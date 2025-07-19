@@ -33,7 +33,7 @@ class OverlayView(context: Context, attrs: AttributeSet?) : View(context, attrs)
         isAntiAlias = true
     }
 
-    // MoveNet keypoint pairs for skeleton drawing
+
     private val jointPairs = listOf(
         0 to 1,  // nose to left eye
         0 to 2,  // nose to right eye

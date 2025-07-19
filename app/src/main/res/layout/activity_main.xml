@@ -8,7 +8,6 @@
     android:background="#0A033A"
     tools:context=".MainActivity">
 
-    <!-- Logo and App Name -->
     <LinearLayout
         android:id="@+id/logoSection"
         android:layout_width="wrap_content"

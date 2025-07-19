@@ -48,8 +48,6 @@ class EglHelper(width: Int, height: Int, surface: Surface) {
         bitmap.getPixels(buffer, 0, width, 0, 0, width, height)
         GLES20.glClearColor(0f, 0f, 0f, 1f)
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT)
-        // Draw the bitmap as a texture (simple approach)
-        // For simplicity, use glDrawPixels (not available in GLES), so use glTexSubImage2D
         val textures = IntArray(1)
         GLES20.glGenTextures(1, textures, 0)
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textures[0])
