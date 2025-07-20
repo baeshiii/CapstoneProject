@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#0A033A"
+    tools:context=".SquatArticle">
+
+    <!-- Scrollable Content -->
+    <ScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginBottom="0dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/bottomNav">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="24dp">
+
+            <!-- Title -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="The Power of Squats"
+                android:textColor="#FFFFFF"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:fontFamily="sans-serif"
+                android:layout_gravity="center_horizontal" />
+
+            <!-- Subtitle -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Why You Should Never Skip Leg Day"
+                android:textColor="#CCCCFF"
+                android:textSize="16sp"
+                android:layout_marginTop="4dp"
+                android:layout_gravity="center_horizontal" />
+
+            <!-- Illustration -->
+            <ImageView
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:src="@drawable/squat"
+                android:scaleType="fitCenter"
+                android:adjustViewBounds="true"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp"
+                android:layout_gravity="center_horizontal"
+                android:background="@drawable/rounded_corners"
+                android:elevation="4dp"
+                android:clipToOutline="true" />
+
+
+            <!-- Section: What Are Squats -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="🦵 What Are Squats?"
+                android:textColor="#FFFFFF"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                android:layout_marginTop="16dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Squats are one of the most effective bodyweight exercises. They strengthen your lower body, improve mobility, and help boost your core stability."
+                android:textColor="#FFFFFF"
+                android:textSize="15sp"
+                android:layout_marginTop="4dp" />
+
+            <!-- Section: Benefits -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="✔️ Benefits:"
+                android:textColor="#FFFFFF"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                android:layout_marginTop="16dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="• Builds leg and glute strength\n• Improves posture and balance\n• Boosts calorie burning\n• Enhances athletic performance"
+                android:textColor="#FFFFFF"
+                android:textSize="15sp"
+                android:layout_marginTop="4dp" />
+
+            <!-- Section: Common Mistakes -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="⚠️ Common Mistakes to Avoid:"
+                android:textColor="#FFFFFF"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                android:layout_marginTop="16dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="• Letting knees go past toes\n• Arching your back\n• Lifting your heels"
+                android:textColor="#FFFFFF"
+                android:textSize="15sp"
+                android:layout_marginTop="4dp" />
+        </LinearLayout>
+    </ScrollView>
+
+    <!-- Bottom Navigation -->
+    <LinearLayout
+        android:id="@+id/bottomNav"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:background="#0F045D"
+        android:orientation="horizontal"
+        android:gravity="center"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <ImageView
+            android:id="@+id/backButton"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@drawable/home"
+            android:layout_marginHorizontal="32dp" />
+
+        <ImageView
+            android:id="@+id/cameraIcon"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@drawable/camera"
+            android:layout_marginHorizontal="32dp"
+            android:clickable="true"
+            android:focusable="true" />
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

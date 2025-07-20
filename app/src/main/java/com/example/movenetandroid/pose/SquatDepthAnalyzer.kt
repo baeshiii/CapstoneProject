@@ -17,6 +17,13 @@ class SquatDepthAnalyzer {
         UNKNOWN 
     }
 
+    enum class SpineAlignment {
+        NEUTRAL,
+        FLEXED,
+        EXTENDED,
+        UNKNOWN
+    }
+
     private var squatPhase: Phase = Phase.STANDING
     private var phaseFrames: Int = 0
     private val hipPositions = mutableListOf<Float>()
@@ -25,6 +32,9 @@ class SquatDepthAnalyzer {
     private val standingThreshold = 50f // Hip well above knee
     private val bottomThreshold = 30f    // Hip at or below knee
     
+    // Spine analyzer integration
+    private val spineAnalyzer = SpineAnalyzer()
+
     // Spine analyzer integration
     private val spineAnalyzer = SpineAnalyzer()
 
@@ -48,7 +58,7 @@ class SquatDepthAnalyzer {
             // Define a threshold for "standing" (e.g., 165 degrees)
             val standingAngleThreshold = 165.0
             val isStanding = (leftKneeAngle != null && leftKneeAngle > standingAngleThreshold) &&
-                             (rightKneeAngle != null && rightKneeAngle > standingAngleThreshold)
+                    (rightKneeAngle != null && rightKneeAngle > standingAngleThreshold)
 
             val hipY = (leftHip.second + rightHip.second) / 2f
             val kneeY = (leftKnee.second + rightKnee.second) / 2f
@@ -74,23 +84,40 @@ class SquatDepthAnalyzer {
 
     // Enhanced feedback function that includes comprehensive spine analysis
     fun getComprehensiveFeedback(
+<<<<<<< HEAD
         phase: Phase, 
         hipY: Float, 
         kneeY: Float, 
+=======
+        phase: Phase,
+        hipY: Float,
+        kneeY: Float,
+>>>>>>> origin/main
         keypoints: Array<FloatArray>,
         imageHeight: Int,
         imageWidth: Int
     ): String {
         val baseFeedback = getSquatFeedback(phase, hipY, kneeY)
+<<<<<<< HEAD
         
+=======
+
+>>>>>>> origin/main
         // Only show spine analysis when actually squatting (not standing)
         if (phase == Phase.STANDING) {
             return baseFeedback
         }
+<<<<<<< HEAD
         
         // Get spine analysis only during squat movement
         val spineAnalysis = spineAnalyzer.analyzeSpine(keypoints, imageHeight, imageWidth)
         
+=======
+
+        // Get spine analysis only during squat movement
+        val spineAnalysis = spineAnalyzer.analyzeSpine(keypoints, imageHeight, imageWidth)
+
+>>>>>>> origin/main
         // Only include spine feedback if we have valid analysis
         return if (spineAnalysis.alignment != SpineAnalyzer.SpineAlignment.UNKNOWN) {
             val spineFeedback = when (spineAnalysis.riskLevel) {

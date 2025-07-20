@@ -16,17 +16,34 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.MovenetAndroid">
+        
+        <activity
+            android:name=".SplashScreen"
+            android:exported="true"
+            android:theme="@style/Theme.MovenetAndroid">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
         <activity
             android:name=".MainActivity"
             android:exported="true"
             android:label="@string/app_name"
-            android:theme="@style/Theme.MovenetAndroid">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+            android:theme="@style/Theme.MovenetAndroid" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+        <activity
+            android:name=".PoseActivity"
+            android:exported="true"
+            android:label="Pose Analyzer"
+            android:theme="@style/Theme.MovenetAndroid" />
+
+        <activity
+            android:name=".SquatArticle"
+            android:exported="false"
+            android:label="Squat Article"
+            android:theme="@style/Theme.MovenetAndroid" />
     </application>
 
 </manifest>

@@ -5,22 +5,22 @@ import kotlin.math.atan2
 import kotlin.math.sqrt
 
 class SpineAnalyzer {
-    
-    enum class SpineAlignment { 
-        NEUTRAL, 
+
+    enum class SpineAlignment {
+        NEUTRAL,
         SLIGHT_FLEXION,    // Minor rounding (5-15°)
         MODERATE_FLEXION,  // Moderate rounding (15-25°)
         SEVERE_FLEXION,    // Severe rounding (>25°)
         SLIGHT_EXTENSION,  // Minor hyperlordosis (-5 to -15°)
         MODERATE_EXTENSION, // Moderate hyperlordosis (-15 to -25°)
         SEVERE_EXTENSION,  // Severe hyperlordosis (<-25°)
-        UNKNOWN 
+        UNKNOWN
     }
-    
+
     enum class RiskLevel {
         LOW, MEDIUM, HIGH, CRITICAL
     }
-    
+
     data class SpineAnalysis(
         val alignment: SpineAlignment,
         val angle: Double,
@@ -28,17 +28,17 @@ class SpineAnalyzer {
         val feedback: String,
         val biomechanicalImpact: String
     )
-    
-    // Adjusted biomechanical thresholds - more realistic for real-world movement
+
+
     private val neutralThreshold = 20.0      // ±5° tolerance for neutral (more forgiving)
     private val slightFlexionThreshold = 35.0 // 5-15° slight flexion
     private val moderateFlexionThreshold = 45.0 // 15-25° moderate flexion
-    private val slightExtensionThreshold = 10.0 // -5 to -15° slight extension  
+    private val slightExtensionThreshold = 10.0 // -5 to -15° slight extension
     private val moderateExtensionThreshold = 20.0 // -15 to -25° moderate extension
-    
+
     private val spineHistory = mutableListOf<SpineAnalysis>()
     private val maxHistory = 5 // Reduced for more responsive feedback
-    
+
     fun analyzeSpine(
         keypoints: Array<FloatArray>,
         imageHeight: Int,
@@ -60,21 +60,21 @@ class SpineAnalyzer {
             )
 
             val spineAngle = calculateSpineAngle(shoulderMidpoint, hipMidpoint)
-            
+
             if (spineAngle != null) {
                 val analysis = createSpineAnalysis(spineAngle)
-                
+
                 // Add to history for stability
                 spineHistory.add(analysis)
                 if (spineHistory.size > maxHistory) {
                     spineHistory.removeAt(0)
                 }
-                
+
                 // Return most stable analysis from recent history
                 return getStableAnalysis()
             }
         }
-        
+
         return SpineAnalysis(
             alignment = SpineAlignment.UNKNOWN,
             angle = 0.0,
@@ -83,7 +83,7 @@ class SpineAnalyzer {
             biomechanicalImpact = "Analysis unavailable"
         )
     }
-    
+
     private fun createSpineAnalysis(angle: Double): SpineAnalysis {
         val absAngle = abs(angle)
         val alignment = when {
@@ -93,7 +93,7 @@ class SpineAnalyzer {
             absAngle > moderateFlexionThreshold -> SpineAlignment.SEVERE_FLEXION
             else -> SpineAlignment.NEUTRAL
         }
-        
+
         val riskLevel = when (alignment) {
             SpineAlignment.NEUTRAL -> RiskLevel.LOW
             SpineAlignment.SLIGHT_FLEXION, SpineAlignment.SLIGHT_EXTENSION -> RiskLevel.LOW
@@ -101,13 +101,13 @@ class SpineAnalyzer {
             SpineAlignment.SEVERE_FLEXION, SpineAlignment.SEVERE_EXTENSION -> RiskLevel.HIGH
             SpineAlignment.UNKNOWN -> RiskLevel.LOW
         }
-        
+
         val feedback = getFeedback(alignment, angle)
         val biomechanicalImpact = getBiomechanicalImpact(alignment, angle)
-        
+
         return SpineAnalysis(alignment, angle, riskLevel, feedback, biomechanicalImpact)
     }
-    
+
     private fun getFeedback(alignment: SpineAlignment, angle: Double): String {
         return when (alignment) {
             SpineAlignment.NEUTRAL -> "Neutral spine maintained"
@@ -120,7 +120,7 @@ class SpineAnalyzer {
             SpineAlignment.UNKNOWN -> "Unable to analyze spine position"
         }
     }
-    
+
     private fun getBiomechanicalImpact(alignment: SpineAlignment, angle: Double): String {
         val absAngle = abs(angle)
         return when (alignment) {
@@ -134,7 +134,7 @@ class SpineAnalyzer {
             SpineAlignment.UNKNOWN -> "Impact assessment unavailable"
         }
     }
-    
+
     private fun getStableAnalysis(): SpineAnalysis {
         if (spineHistory.isEmpty()) {
             return SpineAnalysis(
@@ -145,12 +145,12 @@ class SpineAnalyzer {
                 biomechanicalImpact = "Analysis unavailable"
             )
         }
-        
+
         // Return the most recent analysis for now
         // Could implement more sophisticated stability algorithms here
         return spineHistory.last()
     }
-    
+
     private fun calculateSpineAngle(
         shoulderMidpoint: Pair<Int, Int>,
         hipMidpoint: Pair<Int, Int>
@@ -162,7 +162,7 @@ class SpineAnalyzer {
         val angleDegrees = Math.toDegrees(angleRadians)
         return angleDegrees // 0 = vertical, positive = forward lean, negative = backward lean
     }
-    
+
     private fun getKeypointCoords(
         keypoints: Array<FloatArray>,
         index: Int,
@@ -175,10 +175,10 @@ class SpineAnalyzer {
             Pair(x, y)
         } else null
     }
-    
+
     fun getSpineHistory(): List<SpineAnalysis> = spineHistory.toList()
-    
+
     fun clearHistory() {
         spineHistory.clear()
     }
-} 
+}
