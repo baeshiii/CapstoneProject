@@ -27,14 +27,14 @@ class SquatArticle : AppCompatActivity() {
         val backButton = findViewById<ImageView>(R.id.backButton)
         backButton.setOnClickListener(View.OnClickListener { v: View? ->
             finish()
-            overridePendingTransition(R.anim.fade_in, R.anim.fade_out)
+            overridePendingTransition(R.anim.fade_in, R.anim.fade_out) //animation
         })
 
         val cameraIcon = findViewById<ImageView>(R.id.cameraIcon)
         cameraIcon?.setOnClickListener {
             val intent = Intent(this, PoseActivity::class.java)
             startActivity(intent)
-            overridePendingTransition(R.anim.fade_in, R.anim.fade_out)
+            overridePendingTransition(R.anim.fade_in, R.anim.fade_out) //animation
         }
     }
 }

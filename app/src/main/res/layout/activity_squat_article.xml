@@ -113,6 +113,25 @@
                 android:textColor="#FFFFFF"
                 android:textSize="15sp"
                 android:layout_marginTop="4dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Scientific Insight"
+                android:textColor="#FFFFFF"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                android:layout_marginTop="16dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="A study from the Journal of Strength and Conditioning shows that squats can enhance performance and reduce injury risk by strengthening stabilizing muscles. [Read more] (https://pubmed.ncbi.nlm.nih.gov/...)"
+                android:autoLink="web"
+                android:textColor="#FFFFFF"
+                android:textSize="15sp"
+                android:layout_marginTop="4dp" />
+
         </LinearLayout>
     </ScrollView>
 

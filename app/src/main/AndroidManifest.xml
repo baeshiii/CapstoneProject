@@ -16,7 +16,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.MovenetAndroid">
-        
+
+        <!-- flow of the app -->
         <activity
             android:name=".SplashScreen"
             android:exported="true"

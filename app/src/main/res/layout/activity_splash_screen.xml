@@ -8,4 +8,6 @@
     tools:context=".SplashScreen"
     android:background="@drawable/ss">
 
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>
