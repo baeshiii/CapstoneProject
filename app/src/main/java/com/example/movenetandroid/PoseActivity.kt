@@ -103,9 +103,6 @@ class PoseActivity : AppCompatActivity() {
                 visibility = View.VISIBLE
             }
 
-            repetitionCounter.resetCount()
-            repetitionCounterTextView.text = "Reps: 0"
-
             mainHandler.postDelayed({
                 actionFeedbackTextView.visibility = View.GONE
             }, 2000)

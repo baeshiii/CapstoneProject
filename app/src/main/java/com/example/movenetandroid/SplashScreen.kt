@@ -15,7 +15,7 @@ class SplashScreen : Activity() {
         val timer: Thread = object : Thread() {
             override fun run() {
                 try {
-                    sleep(500) // 0.5 seconds
+                    sleep(1500) // 1.5 seconds
                 } catch (e: InterruptedException) {
                     throw RuntimeException(e)
                 } finally {
