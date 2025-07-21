@@ -27,6 +27,8 @@ import android.graphics.BitmapFactory
 import android.graphics.Matrix
 import com.example.movenetandroid.pose.SpineAnalyzer
 import android.widget.ImageButton
+import android.view.View
+
 
 
 class PoseActivity : AppCompatActivity() {
@@ -45,9 +47,15 @@ class PoseActivity : AppCompatActivity() {
     private var analysisExecutor = Executors.newSingleThreadExecutor()
     private val mainHandler = Handler(Looper.getMainLooper())
 
+    private lateinit var actionFeedbackTextView: TextView
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_pose)
+
+        actionFeedbackTextView = findViewById(R.id.actionFeedbackTextView)
+
 
         // Initialize views
         feedbackTextView = findViewById(R.id.feedbackTextView)
@@ -70,7 +78,17 @@ class PoseActivity : AppCompatActivity() {
         resetCounterButton.setOnClickListener {
             repetitionCounter.resetCount()
             repetitionCounterTextView.text = "Reps: 0"
+
+            actionFeedbackTextView.apply {
+                text = "Reps have been reset"
+                visibility = View.VISIBLE
+            }
+
+            mainHandler.postDelayed({
+                actionFeedbackTextView.visibility = View.GONE
+            }, 2000)
         }
+
 
         // Request camera permission
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
@@ -80,10 +98,23 @@ class PoseActivity : AppCompatActivity() {
         }
 
         flipCameraButton.setOnClickListener {
+            actionFeedbackTextView.apply {
+                text = "Switching camera..."
+                visibility = View.VISIBLE
+            }
+
+            repetitionCounter.resetCount()
+            repetitionCounterTextView.text = "Reps: 0"
+
+            mainHandler.postDelayed({
+                actionFeedbackTextView.visibility = View.GONE
+            }, 2000)
+
             lensFacing = if (lensFacing == CameraSelector.LENS_FACING_BACK)
                 CameraSelector.LENS_FACING_FRONT else CameraSelector.LENS_FACING_BACK
             setupCameraAndFeedback()
         }
+
     }
 
     private val requestPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->

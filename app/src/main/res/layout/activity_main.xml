@@ -74,7 +74,6 @@
         android:background="#0F045D"
         android:orientation="horizontal"
         android:gravity="center"
-        android:fitsSystemWindows="true"
         app:layout_constraintBottom_toBottomOf="parent">
 
         <ImageView

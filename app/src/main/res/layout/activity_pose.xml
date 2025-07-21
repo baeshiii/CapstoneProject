@@ -29,6 +29,22 @@
         android:textAlignment="center" />
 
     <TextView
+        android:id="@+id/actionFeedbackTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|center_horizontal"
+        android:layout_marginTop="80dp"
+        android:text=""
+        android:textColor="#FFEB3B"
+        android:textSize="16sp"
+        android:background="#AA000000"
+        android:padding="8dp"
+        android:elevation="4dp"
+        android:visibility="gone"
+        android:textAlignment="center" />
+
+
+    <TextView
         android:id="@+id/feedbackTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
